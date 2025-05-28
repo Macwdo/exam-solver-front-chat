@@ -22,7 +22,8 @@ const MainCard = () => {
             <CardContent>
                 <div className="grid w-full gap-1.5">
                     {exam && exam.answer && <ListAnswers answers={exam.answer} />}
-                    {exam && exam.answer === null && <DocumentForm exam={exam} />}
+                    {exam && exam.answer === null && exam.status !== "processing" && <DocumentForm exam={exam} />}
+                    {exam && exam.status === "processing" && <div>Processing...</div>}
                 </div>
             </CardContent>
         </Card>
