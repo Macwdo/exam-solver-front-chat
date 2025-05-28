@@ -3,49 +3,64 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useState } from "react";
 import { useEffect } from "react";
+import { Exam, getExams } from "../services";
 
 
-const exams = [
-    { id: 1, name: "Exame 1" },
-    { id: 2, name: "Exame 2" },
-    { id: 3, name: "Exame 3" }
-]
 
-type Exam = {
-    id: number
-    name: string
-}
 
-const getExams = async (): Promise<Exam[]> => {
-    return await new Promise((resolve) => setTimeout(() => resolve(exams), 2000))
-}
-
-const SelectExam = () => {
-    const [exam, setExam] = useState<Exam[]>([])
+const SelectExam = ({ setExam }: { setExam: (exam: Exam) => void }) => {
+    const [exams, setExams] = useState<Exam[]>([])
 
     useEffect(() => {
         const fetchExams = async () => {
-            const exams = await getExams()
-            setExam(exams)
+            setExams(await getExams())
         }
         fetchExams()
     }, [])
 
+    const onSelect = (value: string) => {
+        const selectedExam = exams.find((exam) => exam.id.toString() === value)
+        if (selectedExam) {
+            setExam(selectedExam)
+        }
+    }
+
+    const getStatusIcon = (status: string) => {
+        switch (status) {
+            case "not_started":
+                return <div className="w-2 h-2 bg-gray-500 rounded-full" />
+            case "processing":
+                return <div className="w-2 h-2 bg-yellow-500 rounded-full" />
+            case "completed":
+                return <div className="w-2 h-2 bg-green-500 rounded-full" />
+            case "failed":
+                return <div className="w-2 h-2 bg-red-500 rounded-full" />
+        }
+    }
+
     return (
-        <Select>
+        <Select onValueChange={(value) => onSelect(value)}>
             <SelectTrigger>
                 <SelectValue placeholder="Selecione um exame" />
             </SelectTrigger>
-            <SelectContent>
-                {exam.length === 0 && (
-                    <SelectItem disabled value="loading">Carregando...</SelectItem>
-                )}
-                {exam.map((exam) => (
-                    <SelectItem key={exam.id} value={exam.id.toString()}>
-                        {exam.name}
-                    </SelectItem>
-                ))}
-            </SelectContent>
+            {exams.length === 0 && (
+                <SelectContent>
+                    <SelectItem value="loading">Carregando...</SelectItem>
+                </SelectContent>
+            )}
+
+            {exams.length > 0 && (
+                <SelectContent>
+                    {exams.map((exam, index) => (
+                        <SelectItem key={index} value={exam.id.toString()} className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                                {exam.name}
+                                {getStatusIcon(exam.status)}
+                            </div>
+                        </SelectItem>
+                    ))}
+                </SelectContent>
+            )}
         </Select>
     )
 }
