@@ -10,6 +10,7 @@ import { Exam, sendDocument } from "../services";
 const DocumentForm = ({ exam }: { exam: Exam }) => {
     const textRef = useRef<HTMLTextAreaElement>(null);
 
+    const [sent, setSent] = useState(false);
     const [loading, setLoading] = useState(false);
 
     const onSubmit = async () => {
@@ -20,9 +21,16 @@ const DocumentForm = ({ exam }: { exam: Exam }) => {
             await sendDocument(value, exam.id);
             textRef.current!.value = "";
             setLoading(false);
+            setSent(true);
         }
 
     };
+
+
+    if (sent) {
+        return <div>Enviado com sucesso!</div>
+    }
+
 
     return (
         <div className="flex flex-col gap-2">
@@ -51,7 +59,6 @@ const DocumentForm = ({ exam }: { exam: Exam }) => {
                     )
                 }
             </div>
-
         </div >
     );
 };
