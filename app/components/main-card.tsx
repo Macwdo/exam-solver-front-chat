@@ -3,32 +3,89 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import SelectExam from "./select-exam";
 import DocumentForm from "./document-form";
-import { Exam } from "../services";
+import { getExams } from "../services";
 import ListAnswers from "./list-answers";
-import { useState } from "react";
+import { LoaderCircle } from "lucide-react";
+import { useExamStore } from "@/lib/store";
+import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query';
 
-
+const queryClient = new QueryClient();
 
 const MainCard = () => {
-    const [exam, setExam] = useState<Exam | null>(null)
-
     return (
-        <Card className="w-full max-w-md">
-            <CardHeader>
-                <div className="flex items-center justify-center">
-                    <SelectExam setExam={setExam} />
-                </div>
-            </CardHeader>
-            <CardContent>
-                <div className="grid w-full gap-1.5">
-                    {exam && exam.answer && <ListAnswers answers={exam.answer} />}
-                    {exam && exam.answer === null && exam.status !== "processing" && <DocumentForm exam={exam} />}
-                    {exam && exam.status === "processing" && <div>Processing...</div>}
-                </div>
-            </CardContent>
-        </Card>
+        <>
+            <QueryClientProvider client={queryClient}>
+                <MainCardContent />
+            </QueryClientProvider>
+        </>
     )
 }
+
+const MainCardContent = () => {
+    const { selectedExam } = useExamStore();
+    const { data: exams = [], isLoading } = useQuery({
+        queryKey: ['exams'],
+        queryFn: getExams,
+    });
+
+    const isProcessing = selectedExam && selectedExam.status === "processing"
+    const shouldShowDocumentForm = selectedExam && selectedExam.answer === null && !isProcessing
+    const shouldShowListAnswers = selectedExam && selectedExam.answer;
+
+    if (isLoading) {
+        return <Loading />
+    }
+    if (!isLoading) {
+        return (
+            <Card className="shadow-2xl bg-zinc-100 rounded-none border-none w-full max-w-md">
+                <CardHeader>
+                    <div className="flex items-center justify-center">
+                        <SelectExam exams={exams} />
+                    </div>
+                </CardHeader>
+                {shouldShowDocumentForm && <DocumentFormContent />}
+                {shouldShowListAnswers && <ListAnswersContent />}
+            </Card>
+        )
+    }
+}
+
+const DocumentFormContent = () => {
+    return (
+        <WrapCardContent>
+            <DocumentForm />
+        </WrapCardContent>
+    )
+}
+
+const ListAnswersContent = () => {
+    const { selectedExam } = useExamStore();
+    return (
+        <WrapCardContent>
+            {/* @ts-ignore */}
+            <ListAnswers answers={selectedExam.answer} />
+        </WrapCardContent>
+    )
+}
+
+const Loading = () => {
+    return (
+        <div className="flex items-center justify-center">
+            <LoaderCircle color="#fff" size={80} strokeWidth={1} className="animate-spin" />
+        </div>
+    )
+}
+
+const WrapCardContent = ({ children }: { children: React.ReactNode }) => {
+    return (
+        <CardContent>
+            <div className="grid w-full gap-1.5">
+                {children}
+            </div>
+        </CardContent>
+    )
+}
+
 
 
 export default MainCard;

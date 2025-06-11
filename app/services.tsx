@@ -18,9 +18,10 @@ export type Exam = {
     name: string
     answer: Answer[] | null
     status: ExamStatus
+    is_blocked: boolean
 }
 
-export type ExamStatus = "not_started" | "processing" | "completed" | "failed"
+export type ExamStatus = "not_started" | "processing" | "completed" | "failed" | "blocked"
 
 
 const sendDocument = async (document: string, examId: number) => {
