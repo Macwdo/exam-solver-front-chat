@@ -62,8 +62,7 @@ const ListAnswersContent = () => {
     const { selectedExam } = useExamStore();
     return (
         <WrapCardContent>
-            {/* @ts-ignore */}
-            <ListAnswers answers={selectedExam.answer} />
+            <ListAnswers answers={selectedExam?.answer ?? null} />
         </WrapCardContent>
     )
 }

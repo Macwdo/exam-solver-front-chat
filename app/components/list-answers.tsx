@@ -1,7 +1,7 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Answer } from "../services";
 
-const ListAnswers = ({ answers }: { answers: Answer[] }) => {
+const ListAnswers = ({ answers }: { answers: Answer[] | null }) => {
 
     return (
         <Table className="border">
@@ -12,7 +12,7 @@ const ListAnswers = ({ answers }: { answers: Answer[] }) => {
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {answers.map((answer, i) => (
+                {answers?.map((answer, i) => (
                     <TableRow key={i}>
                         <TableCell>{answer.number}</TableCell>
                         <TableCell>{answer.answer.letter}</TableCell>

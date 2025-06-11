@@ -6,7 +6,6 @@ import { useExamStore } from "@/lib/store";
 import { LockIcon, RefreshCcwIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
 
 const EXAM_STATUSES = ["not_started", "blocked", "processing", "completed", "failed"] as const;
 
