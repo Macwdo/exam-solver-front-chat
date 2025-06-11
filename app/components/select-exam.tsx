@@ -45,6 +45,10 @@ function ExamStatusIcon({ exam }: { exam: Exam }) {
     return <StatusDot status={exam.status} />;
 }
 
+function dotNameUntil(name: string, maxLength: number) {
+    return name.length > maxLength ? name.slice(0, maxLength) + "..." : name;
+}
+
 const SelectExam = ({ exams }: SelectExamProps) => {
     const { setSelectedExam, refreshId, incrementRefreshId } = useExamStore();
     const { refetch, isRefetching } = useQuery({
@@ -120,7 +124,7 @@ const SelectExamContent = ({ exams }: { exams: Exam[] }) => {
                                 disabled={isExamBlocked(exam)}
                             >
                                 <div className="flex items-center gap-2">
-                                    {exam.name}
+                                    {dotNameUntil(exam.name, 40)}
                                     <ExamStatusIcon exam={exam} />
                                 </div>
                             </SelectItem>

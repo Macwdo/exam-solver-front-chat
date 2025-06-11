@@ -37,7 +37,7 @@ const MainCardContent = () => {
     }
     if (!isLoading) {
         return (
-            <Card className="shadow-2xl bg-zinc-100 rounded-none border-none w-full max-w-md">
+            <Card className="shadow-2xl drop-shadow-lg bg-zinc-100 rounded-none border-none w-full max-w-lg">
                 <CardHeader>
                     <div className="flex items-center justify-center">
                         <SelectExam exams={exams} />
