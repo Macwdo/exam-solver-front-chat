@@ -95,7 +95,6 @@ const RefreshButton = ({ handleRefresh, isRefetching }: { handleRefresh: () => v
 
 const SelectExamInput = ({ exams, handleSelect }: { exams: Exam[], handleSelect: (value: string) => void }) => {
     return (
-
         <Select onValueChange={handleSelect}>
             <SelectTrigger className="rounded-none">
                 <SelectValue placeholder="Selecione um exame" />
@@ -124,7 +123,7 @@ const SelectExamContent = ({ exams }: { exams: Exam[] }) => {
                                 disabled={isExamBlocked(exam)}
                             >
                                 <div className="flex items-center gap-2">
-                                    {dotNameUntil(exam.name, 40)}
+                                    {dotNameUntil(`${exam.label} - ${exam.name}`, 40)}
                                     <ExamStatusIcon exam={exam} />
                                 </div>
                             </SelectItem>

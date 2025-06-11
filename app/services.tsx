@@ -16,6 +16,7 @@ export type Answer = {
 export type Exam = {
     id: number
     name: string
+    label: string
     answer: Answer[] | null
     status: ExamStatus
     is_blocked: boolean
